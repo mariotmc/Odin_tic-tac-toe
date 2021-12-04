@@ -30,6 +30,10 @@ a:active {
   text-decoration: none;
 }
 
+#win-loss-message {
+  text-align: center;
+}
+
 .row {
   display: flex;
   width: fit-content;
@@ -41,4 +45,10 @@ a:active {
   width: 20px;
   height: 20px;
   text-align: center;
+}
+
+.players {
+  display: flex;
+  justify-content: center;
+  gap: rem(100);
 }
