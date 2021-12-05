@@ -1,3 +1,45 @@
+const GameInitialization = (() => {
+  const container = document.querySelector(".container");
+  const nameInput = document.querySelector("#name");
+
+  window.addEventListener("load", () => {
+    container.style.display = "none";
+    nameInput.focus();
+  });
+
+  return {
+    container,
+    nameInput,
+  };
+})();
+
+const PlayerNamePrompt = (() => {
+  const form = document.querySelector("form");
+  const player1DisplayName = document.querySelector("#player1-name");
+
+  const getPlayerName = () => {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      if (GameInitialization.nameInput.value.length > 8) {
+        alert("Please limit the characters to 8");
+      } else if (GameInitialization.nameInput.value.length <= 8) {
+        const playerName = GameInitialization.nameInput.value;
+
+        player1DisplayName.textContent = playerName;
+
+        GameInitialization.container.style.display = "flex";
+        form.style.display = "none";
+
+        GameInitialization.nameInput.textContent = "";
+        GameInitialization.nameInput.value = "";
+      }
+    });
+  };
+
+  return { player1DisplayName, getPlayerName };
+})();
+
 const GameBoard = (() => {
   let board = ["", "", "", "", "", "", "", "", ""];
 
@@ -10,23 +52,27 @@ const GameBoard = (() => {
           parseInt(Scores.player1Display.textContent) < 5 &&
           parseInt(Scores.player2Display.textContent) < 5
         ) {
-          if (GameBoard.board[e.target.dataset.index] === "") {
-            if (GameFlow.currentPlayer === GameFlow.player1) {
+          if (GameFlow.currentPlayer === GameFlow.player1) {
+            if (GameBoard.board[e.target.dataset.index] === "") {
               // player move
               GameBoard.board[e.target.dataset.index] =
                 GameFlow.currentPlayer.getShape();
               element.textContent = GameBoard.board[e.target.dataset.index];
+              element.style.color = "#ee6055";
               GameFlow.GameOver();
 
               GameFlow.currentPlayer = GameFlow.player2;
 
+              // computer move
               if (
                 parseInt(Scores.player1Display.textContent) < 5 &&
                 parseInt(Scores.player2Display.textContent) < 5
               ) {
-                Computer.computerMoves();
-                GameFlow.GameOver();
-                GameFlow.currentPlayer = GameFlow.player1;
+                setTimeout(() => {
+                  Computer.computerMoves();
+                  GameFlow.GameOver();
+                  GameFlow.currentPlayer = GameFlow.player1;
+                }, 500);
               }
             }
           }
@@ -72,6 +118,7 @@ const Computer = (() => {
     if (GameBoard.board[cell] === "") {
       GameBoard.board[cell] = Computer.profile.getShape();
       GameBoard.cells[cell].textContent = Computer.profile.getShape();
+      GameBoard.cells[cell].style.color = "#5aa9e6";
     } else {
       return computerMoves();
     }
@@ -119,9 +166,7 @@ const Scores = (() => {
 })();
 
 const GameFlow = (() => {
-  const player1 = Player(prompt("What's your name?"), "X");
-  const player1DisplayName = document.querySelector("#player1-name");
-  player1DisplayName.textContent = player1.getName();
+  const player1 = Player(PlayerNamePrompt.getPlayerName(), "X");
 
   const player2 = Computer.profile;
 
@@ -252,14 +297,22 @@ const GameFlow = (() => {
 
 const winLossMessage = (() => {
   const messageDisplay = document.querySelector("#win-loss-message");
+  const body = document.querySelector("body");
 
-  const winMessage = () =>
-    (messageDisplay.textContent = `Congrats ${GameFlow.player1.getName()}! You won.`);
+  const winMessage = () => {
+    body.style.backgroundColor = "#d6f6dd";
+    messageDisplay.textContent = `Congrats ${PlayerNamePrompt.player1DisplayName.textContent}! You won.`;
+  };
 
-  const lossMessage = () =>
-    (messageDisplay.textContent = `Unlucky ${GameFlow.player1.getName()}! You lost.`);
+  const lossMessage = () => {
+    body.style.backgroundColor = "#ffafcc";
+    messageDisplay.textContent = `Unlucky ${PlayerNamePrompt.player1DisplayName.textContent}! You lost.`;
+  };
 
-  const resetMessage = () => (messageDisplay.textContent = `First to 5 wins`);
+  const resetMessage = () => {
+    body.style.backgroundColor = "#cddafd";
+    messageDisplay.textContent = `First to 5 wins`;
+  };
 
   return { winMessage, lossMessage, resetMessage };
 })();
