@@ -1,11 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+
 // FONTS
 :root {
-	--font-body: Arial, sans-serif;
+  --font-body: "Poppins", sans-serif;
 }
-
 
 //COLOURS
 :root {
-	--white: hsl(0, 0%, 100%);
-	--black: hsl(0, 0%, 0%);
+  --main-bg: #cddafd;
+  --player-color: #ee6055;
+  --computer-color: #5aa9e6;
+  --font-color: #222325;
 }
